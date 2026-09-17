@@ -9,10 +9,7 @@ Just paste a link, and WOW!
 - **Instant Extraction:** Fetch thumbnails immediately after pasting the video URL.
 - **Multi-Resolution Support:** View and download in HD, HQ, and standard qualities.
 - **One-Click Download:** Dedicated buttons for seamless downloading.
-- **Fully Responsive:** Beautifully optimized for mobile and desktop screens.
-
-## Tech Stack
-- HTML5, CSS3, JavaScript (ES6+)
+- **Tech Stack:** HTML5, CSS3, JavaScript (ES6+)
 
 ## Quick Start (Local Setup)
 ```bash
