@@ -3,22 +3,52 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>YouTube Previewer : )</title>
+  <title>YouTube Previewer :)</title>
   <link rel="shortcut icon" href="./elements/favicon/fav-03.png" type="image/x-icon">
   <style>
-    * {margin:0; padding:0; box-sizing:border-box;}
-    body {
-      font-family: 'Segoe UI', Tahoma, sans-serif;
-      background: #f9f9f9;
-      background-image: url("./elements/bg-04.jpg");
-      background-position: center;
-      background-repeat: no-repeat;
+    :root {--bg-image: url("./elements/bg-04.jpg");}
+
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    .bg-wrapper {position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none;}
+    .bg-image {
+      width: 100%;
+      height: 100%;
+      background-image: var(--bg-image);
       background-size: cover;
+      /* background-position: center; */
+      background-position: center 51%;
+      background-repeat: no-repeat;
+      opacity: 0;
+      transform: scale(1.65);
+      will-change: transform, opacity;
+      animation: bgZoomIn 1.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    @keyframes bgZoomIn {
+      0% {
+        opacity: 0;
+        transform: scale(1.65);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    body {
+      position: relative;
+      z-index: 2;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      background-color: #0f172a;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: 94vh;
+      min-height: 92vh;
       margin: 0;
       padding: 20px;
     }
@@ -33,30 +63,68 @@
     h1 {
       font: 400 34px/1.2 "Caprasimo", serif;
       color: #f1e3c2;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
       text-align: center;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+      opacity: 0;
+      transform: translateY(10px);
+      animation: fadeUp 0.8s ease-out 0.25s forwards;
+      user-select:none;
+      -moz-user-select:none;
+    }
+    @keyframes fadeUp {
+      to {opacity: 1; transform: translateY(0);}
     }
 
     .form-container {
       width: 100%;
-      max-width: 600px;
+      max-width: 700px;
       text-align: center;
     }
 
-    input[type="text"] {
+    .search-box {
       width: 100%;
-      padding: 12px 16px;
-      border: 2px solid #ddd;
-      border-radius: 12px;
-      font-size: 15px;
-      color: #888;
-      outline: none;
-      transition: border 0.3s;
+      max-width: 600px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px 8px 20px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      opacity: 0;
+      transform: translateY(12px);
+      animation: fadeUp 0.85s ease-out 0.35s forwards;
+      transition: box-shadow 0.25s ease, background 0.25s ease, transform 0.2s ease;
+    }
+    .search-box:focus-within {
+      background: #ffffff;
+      box-shadow: 0 22px 48px rgba(0, 0, 0, 0.36), 0 0 0 4px rgba(255, 255, 255, 0.28);
+    }
+    .search-icon {
+      width: 20px;
+      height: 20px;
+      color: #64748b;
+      flex-shrink: 0;
     }
 
-    input[type="text"]:focus {
-      border-color: #bbb;
+    input[type="text"].search-input {
+      flex: 1;
+      width: 100%;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-size: 15px;
+      /* color: #0f172a; */
+      color: #888;
+      padding: 6px 4px;
+      transition: color 0.2s ease;
     }
+    input[type="text"].search-input::placeholder {color: #64748b;}
 
     #preview {
       display: flex;
@@ -64,11 +132,10 @@
       margin-top: 34px;
       width: 100%;
     }
-
     .card {
       background: #fff;
       border-radius: 16px;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
       overflow: hidden;
       max-width: 460px;
       width: 100%;
@@ -77,20 +144,30 @@
     }
     .card:hover {
       transform: scale(1.03);
-      box-shadow: rgba(0, 0, 0, 0.25) 0px 25px 50px -12px;
+      box-shadow: rgba(0, 0, 0, 0.36) 0px 25px 50px -12px;
     }
-    .thumbnail img {width:100%; height:100%; display:block;
+    .thumbnail img {
+      width: 100%;
+      height: 100%;
+      display: block;
       transition: transform 0.8s cubic-bezier(0.4, 0.4, 0.2, 1);
       will-change: transform;
     }
-    .thumbnail {overflow: hidden;}
+    .thumbnail { overflow: hidden; }
     .thumbnail:hover #thumbImg { transform: scale(1.08); }
-    .card-content {padding:16px; text-align:center;}
-    .card-content h2 {margin: 10px 0; font-size: 16px; color: #222;}
-    .card-content p {color:#666; font-size:12px;}
-    .card-content a {text-decoration: none !important;}
+    .card-content { padding: 16px; text-align: center; }
+    .card-content h2 { margin: 10px 0; font-size: 16px; color: #222; }
+    .card-content p { color: #666; font-size: 12px; }
+    .card-content a { text-decoration: none !important; }
 
-    .footer-note {position:fixed; bottom:14px; font-size:8px; letter-spacing:5px; color: #999aad;}
+    .footer-note {
+      position: fixed;
+      bottom: 14px;
+      font-size: 8px;
+      letter-spacing: 5px;
+      color: #999aad;
+      z-index: 2;
+    }
 
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(20px); }
@@ -103,15 +180,16 @@
     }
 
     @media screen and (max-width: 500px) {
-      body {background-size: auto; background-position: center 11%; min-height: 76vh;}
-      h1 {font: 400 28px/1.2 "Caprasimo", serif; color: #d2c0f0;}
-      .card {max-width: 600px;}
-      .footer-note {color: #eaeaf5;}
-      .card-content h2 {font-size: 14px;}
-      .card-content p {font-size: 12px;}
+      body {min-height: 76vh;} .bg-image {background-size: auto; background-position: center 12%;}
+      h1 { font: 400 28px/1.2 "Caprasimo", serif; color: #d2c0f0; }
+      .search-box { padding: 7px 12px 7px 16px; }
+      .card { max-width: 600px; }
+      .footer-note { color: #eaeaf5; }
+      .card-content h2 { font-size: 14px; }
+      .card-content p { font-size: 12px; }
     }
 
-    .tooltip-container {position: fixed; top: 12px; right: 12px; z-index: 999;}
+    .tooltip-container { position: fixed; top: 12px; right: 12px; z-index: 999; user-select:none; -moz-user-select:none;}
     .tooltip {
       position: relative;
       display: inline-block;
@@ -122,23 +200,23 @@
       background-color: transparent;
       border-radius: 50px;
       padding: 2px 10px;
-      border: 1px solid #2b2b2b;
-      transition: background-color 0.3s ease;
+      border: 1px solid rgba(43, 43, 43);
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
-    .tooltip:hover {color: #e6e6e6;}
+    .tooltip:hover { color: #ffffff; background-color: rgba(15, 23, 42, 0.55); }
     .tooltip-text {
       visibility: hidden;
       width: 280px;
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.25);
       color: #f0f0f0;
-      font-size: 13px;
+      font-size: 12.5px;
       text-align: left;
       border-radius: 8px;
-      padding: 14px;
+      padding: 16px;
       position: absolute;
       top: 120%;
       right: 0;
@@ -148,11 +226,14 @@
       transform: translateY(-10px);
       pointer-events: none;
     }
-    .tooltip:hover .tooltip-text {visibility: visible; opacity: 1; transform: translateY(0);}
+    .tooltip:hover .tooltip-text { visibility: visible; opacity: 1; transform: translateY(0); }
   </style>
 </head>
 
 <body>
+  <div class="bg-wrapper" aria-hidden="true">
+    <div class="bg-image"></div>
+  </div>
 
   <div class="tooltip-container">
     <div class="tooltip">?
@@ -162,14 +243,18 @@
       </div>
     </div>
   </div>
-  
-  <h1>Can you see the preview?</h1>
 
+  <h1>Can you see the preview?</h1>
   <div class="form-container">
-    <input type="text" id="youtubeLink" placeholder="aaah, paste your youtube link here." />
+    <div class="search-box" role="search">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="11" cy="11" r="8"></circle>
+        <path d="m21 21-4.3-4.3"></path>
+      </svg>
+      <input type="text" id="youtubeLink" class="search-input" placeholder="aaah, paste your youtube link here." autocomplete="off" />
+    </div>
   </div>
   <div id="preview"></div>
-
 
 
   <script>
@@ -213,7 +298,7 @@
       if (video) {
         const card = document.createElement("div");
         card.className = "card";
-        
+
         const highResUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
         const lowResUrl = `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
 
@@ -224,9 +309,9 @@
               <img src="${highResUrl}" id="thumbImg" alt="${video.title}">
             </a>
           </div>
-          <div class="card-content"> 
+          <div class="card-content">
             <a href="${url}" target="_blank">
-              <h2 title="Go to YouTube video ⇾">${video.title}</h2> 
+              <h2 title="Go to YouTube video ⇾">${video.title}</h2>
             </a>
             <p>By ${video.author}</p>
           </div>
@@ -234,13 +319,13 @@
 
         const imgElement = card.querySelector("#thumbImg");
         const linkElement = card.querySelector("#thumbLink");
-        
-        // ইমেজ লোড হওয়ার পর কন্ডিশন চেক
+
+        // ইমেজ লোড হওয়ার পর কন্ডিশন চেক
         imgElement.onload = function() {
-          // যদি হাই-কোয়ালিটি ইমেজ না থাকে (উইডথ ১২০ বা তার কম হয়)
+          // যদি হাই-কোয়ালিটি ইমেজ না থাকে (উইডথ ১২০ বা তার কম হয়)
           if (this.naturalWidth <= 120) {
             this.src = lowResUrl; // ইমেজের সোর্স পরিবর্তন
-            linkElement.href = lowResUrl; // লিংকের href-ও পরিবর্তন করে mqdefault করে দেওয়া হলো
+            linkElement.href = lowResUrl; // লিংকের href-ও পরিবর্তন করে mqdefault করে দেওয়া হলো
           }
         };
 
@@ -255,7 +340,7 @@
     });
   </script>
 
-<div class="footer-note">Sept 03, 2025</div>
+  <div class="footer-note">Sept 03, 2025</div>
 
 </body>
 </html>
