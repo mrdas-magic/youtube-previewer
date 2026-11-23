@@ -1,4 +1,4 @@
-# 📸 YouTube Thumbnail Previewer
+# YouTube Thumbnail Previewer
 
 A simple, lightweight, and responsive Web-APP that extracts and allows downloading of YouTube video thumbnails in all available resolutions instantly. Designed & developed by me! Just paste a link, and WOW!
 
